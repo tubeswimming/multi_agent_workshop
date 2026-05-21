@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Orchestration Dashboard</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111110;
+      --surface: #1C1C1A;
+      --border: #2E2E2B;
+      --border-strong: #444440;
+      --text-primary: #F2F0EB;
+      --text-secondary: #9B9B93;
+      --text-muted: #5C5C57;
+      --accent: #E8512A;
+      --accent-light: #2A1810;
+      --success: #34D399;
+      --success-light: #0A2A1A;
+      --warning: #FBBF24;
+      --warning-light: #2A1F08;
+      --error: #F87171;
+      --error-light: #2A0F0F;
+      --info: #60A5FA;
+      --info-light: #0F1E3A;
+      --font-display: 'DM Serif Display', Georgia, serif;
+      --font-mono: 'IBM Plex Mono', 'Courier New', monospace;
+    }
+
+    /* === RESET === */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 14px; }
+    body {
+      background: var(--bg);
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    h1, h2, h3 { font-family: var(--font-display); font-weight: 400; }
+
+    /* === HEADER === */
+    .site-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding: 28px 32px 20px;
+      border-bottom: 2px solid var(--text-primary);
+      background: var(--surface);
+    }
+    .header-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+    .header-title {
+      font-family: var(--font-display);
+      font-size: 32px;
+      line-height: 1.1;
+      color: var(--text-primary);
+    }
+    .header-title em {
+      font-style: italic;
+      color: var(--accent);
+    }
+    .header-right {
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+    }
+    .pipeline-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .pipeline-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-weight: 600;
+      color: var(--accent);
+    }
+    .last-updated {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* === LAYOUT === */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      padding: 0;
+    }
+
+    /* === PANEL === */
+    .panel {
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 24px;
+      background: var(--surface);
+    }
+    .panel:nth-child(even) { border-right: none; }
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+      margin-bottom: 18px;
+    }
+    .panel-title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      color: var(--text-primary);
+    }
+    .panel-meta {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+    }
+
+    /* === STATUS DOTS === */
+    .status-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .dot-idle    { background: #C4C4BC; }
+    .dot-running { background: var(--accent); box-shadow: 0 0 0 2px var(--accent-light); animation: pulse 2s infinite; }
+    .dot-done    { background: var(--success); }
+    .dot-error   { background: var(--error); }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 2px var(--accent-light); }
+      50%       { box-shadow: 0 0 0 4px var(--accent-light); }
+    }
+
+    /* === AGENT CARDS === */
+    .agent-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 10px;
+    }
+    .agent-card {
+      border: 1px solid var(--border);
+      padding: 12px 14px;
+      background: var(--bg);
+      transition: border-color 0.15s;
+    }
+    .agent-card:hover { border-color: var(--border-strong); }
+    .agent-card.is-running { border-color: var(--accent); background: var(--accent-light); }
+    .agent-card.is-done    { border-color: var(--success); background: var(--success-light); }
+    .agent-card.is-error   { border-color: var(--error);   background: var(--error-light); }
+    .agent-name {
+      font-family: var(--font-display);
+      font-size: 15px;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+    }
+    .agent-status-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+    .status-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+    .agent-role {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* === TASK TABLE === */
+    .task-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .task-table th {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+      padding: 0 8px 8px;
+      text-align: left;
+      font-weight: 500;
+    }
+    .task-table td {
+      padding: 9px 8px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+      font-size: 12px;
+    }
+    .task-table tr:last-child td { border-bottom: none; }
+    .task-table tr:hover td { background: var(--bg); }
+    .task-id {
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+
+    /* === BADGES === */
+    .badge {
+      display: inline-block;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 2px 7px;
+      border: 1px solid currentColor;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .badge-pending     { color: var(--text-muted); }
+    .badge-in_progress { color: var(--accent); }
+    .badge-review      { color: var(--warning); }
+    .badge-qa_ready    { color: var(--info); }
+    .badge-done        { color: var(--success); }
+    .badge-failed      { color: var(--error); }
+    .badge-high        { color: var(--error); }
+    .badge-medium      { color: var(--warning); }
+    .badge-low         { color: var(--text-muted); }
+
+    /* === LOG PANEL === */
+    .log-list {
+      list-style: none;
+      max-height: 280px;
+      overflow-y: auto;
+    }
+    .log-list::-webkit-scrollbar { width: 4px; }
+    .log-list::-webkit-scrollbar-track { background: var(--bg); }
+    .log-list::-webkit-scrollbar-thumb { background: var(--border-strong); }
+    .log-item {
+      display: grid;
+      grid-template-columns: 72px 68px 1fr;
+      gap: 10px;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 11px;
+      align-items: start;
+    }
+    .log-item:last-child { border-bottom: none; }
+    .log-time {
+      color: var(--text-muted);
+      font-size: 10px;
+      padding-top: 1px;
+    }
+    .log-severity {
+      text-transform: uppercase;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      padding-top: 1px;
+    }
+    .sev-INFO     { color: var(--info); }
+    .sev-WARNING  { color: var(--warning); }
+    .sev-CRITICAL { color: var(--error); }
+    .log-detail strong { color: var(--text-primary); }
+    .log-detail { color: var(--text-secondary); line-height: 1.4; }
+
+    /* === STRATEGY CARDS === */
+    .strategy-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .strategy-card {
+      border: 1px solid var(--border);
+      padding: 14px;
+      position: relative;
+      transition: border-color 0.15s;
+    }
+    .strategy-card.active {
+      border-color: var(--accent);
+      background: var(--accent-light);
+    }
+    .strategy-card.inactive {
+      opacity: 0.65;
+    }
+    .applied-tag {
+      display: inline-block;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .pattern-name {
+      font-family: var(--font-display);
+      font-size: 14px;
+      color: var(--text-primary);
+      margin-bottom: 5px;
+      line-height: 1.2;
+    }
+    .pattern-desc {
+      font-size: 11px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* === FOOTER === */
+    .site-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 32px;
+      border-top: 1px solid var(--border);
+      font-size: 11px;
+      color: var(--text-muted);
+      background: var(--surface);
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-left">
+      <div class="header-eyebrow">Multi-Agent Pipeline</div>
+      <h1 class="header-title">Agent Orchestration<br><em>Dashboard</em></h1>
+    </div>
+    <div class="header-right">
+      <div class="pipeline-status">
+        <span id="pipeline-dot" class="status-dot dot-idle"></span>
+        <span id="pipeline-label" class="pipeline-label">LOADING...</span>
+      </div>
+      <div id="last-updated" class="last-updated">—</div>
+    </div>
+  </header>
+
+  <main class="dashboard-grid">
+    <section class="panel" id="agents-section">
+      <div class="panel-header">
+        <h2 class="panel-title">Agent Status</h2>
+        <span class="panel-meta">7 agents</span>
+      </div>
+      <div id="agents-grid" class="agent-grid"></div>
+    </section>
+
+    <section class="panel" id="tasks-section">
+      <div class="panel-header">
+        <h2 class="panel-title">Task Queue</h2>
+        <span class="panel-meta">5 tasks</span>
+      </div>
+      <table class="task-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Status</th>
+            <th>Priority</th>
+            <th>Assignee</th>
+          </tr>
+        </thead>
+        <tbody id="tasks-tbody"></tbody>
+      </table>
+    </section>
+
+    <section class="panel" id="logs-section">
+      <div class="panel-header">
+        <h2 class="panel-title">Monitor Log</h2>
+        <span class="panel-meta">recent events</span>
+      </div>
+      <ul id="logs-list" class="log-list"></ul>
+    </section>
+
+    <section class="panel" id="strategy-section">
+      <div class="panel-header">
+        <h2 class="panel-title">Model Strategy</h2>
+        <span class="panel-meta">pattern reference</span>
+      </div>
+      <div id="strategy-grid" class="strategy-grid"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Agent Orchestration Dashboard</span>
+    <span id="last-updated-footer" class="last-updated">마지막 업데이트: —</span>
+  </footer>
+
+  <script>
+    // === DATA SOURCES (served from project root) ===
+    const DATA_SOURCES = {
+      tasks:        '/tasks.json',
+      pipeline:     '/pipeline_state.json',
+      reviewReport: '/reports/review_report.json',
+      testResult:   '/reports/test_result.json',
+      monitorLog:   '/logs/monitor_log.json',
+    };
+
+    // === STATIC AGENT METADATA ===
+    const AGENT_META = [
+      { id: 'orchestrator', name: 'Orchestrator', role: '파이프라인 지휘'  },
+      { id: 'planner',      name: 'Planner',      role: 'tasks.json 생성' },
+      { id: 'developer',    name: 'Developer',    role: '기능 구현'        },
+      { id: 'reviewer',     name: 'Reviewer',     role: '코드 검토'        },
+      { id: 'qa',           name: 'QA',           role: '통합 테스트'      },
+      { id: 'monitor',      name: 'Monitor',      role: '상태 감시'        },
+      { id: 'dashboard',    name: 'Dashboard',    role: 'HTML 시각화'      },
+    ];
+
+    // pipeline_state.current_stage → 현재 실행 중인 에이전트 목록
+    const STAGE_RUNNING = {
+      planning:   ['orchestrator', 'planner',   'monitor'],
+      developing: ['orchestrator', 'developer', 'monitor'],
+      reviewing:  ['orchestrator', 'reviewer',  'monitor'],
+      testing:    ['orchestrator', 'qa',        'monitor'],
+      rendering:  ['orchestrator', 'dashboard', 'monitor'],
+    };
+    const STAGE_DONE_BEFORE = {
+      developing: ['planner'],
+      reviewing:  ['planner', 'developer'],
+      testing:    ['planner', 'developer', 'reviewer'],
+      rendering:  ['planner', 'developer', 'reviewer', 'qa'],
+    };
+
+    // === STATIC STRATEGY PATTERNS ===
+    const STRATEGIES = [
+      { name: '리더형 (Orchestrator)',    desc: '단일 컨트롤러가 전체 흐름을 결정. 명확한 책임, 빠른 의사결정.',     applied: true  },
+      { name: '파이프라인형 (Sequential)', desc: 'Planner→Dev→Review→QA 순차 실행. 각 단계가 이전 결과에 의존.',   applied: true  },
+      { name: '역할 분리형 (Specialized)', desc: '에이전트마다 단일 책임. 교체·확장이 쉽고 버그 추적이 명확.',      applied: true  },
+      { name: '위원회형 (Committee)',      desc: '다수 에이전트 투표·합의. 고위험 결정에 적합하나 속도가 느림.',     applied: false },
+    ];
+
+    // === DATA FETCHER ===
+    async function fetchJSON(path) {
+      try {
+        const res = await fetch(path);
+        if (!res.ok) return null;
+        return await res.json();
+      } catch { return null; }
+    }
+
+    async function loadAll() {
+      const [tasks, pipeline, reviewReport, testResult, monitorLog] = await Promise.all([
+        fetchJSON(DATA_SOURCES.tasks),
+        fetchJSON(DATA_SOURCES.pipeline),
+        fetchJSON(DATA_SOURCES.reviewReport),
+        fetchJSON(DATA_SOURCES.testResult),
+        fetchJSON(DATA_SOURCES.monitorLog),
+      ]);
+      return { tasks, pipeline, reviewReport, testResult, monitorLog };
+    }
+
+    // === AGENT STATUS INFERENCE ===
+    function deriveAgents(pipeline) {
+      if (!pipeline) return AGENT_META.map(a => ({ ...a, status: 'idle' }));
+      const stage   = pipeline.current_stage || '';
+      const pStatus = pipeline.status || 'idle';
+      const running = STAGE_RUNNING[stage]     || [];
+      const done    = STAGE_DONE_BEFORE[stage] || [];
+      return AGENT_META.map(a => {
+        let status = 'idle';
+        if (pStatus === 'done')                              status = 'done';
+        else if (pStatus === 'failed' && running.includes(a.id)) status = 'error';
+        else if (running.includes(a.id))                    status = 'running';
+        else if (done.includes(a.id))                       status = 'done';
+        return { ...a, status };
+      });
+    }
+
+    // === RENDERERS ===
+    function renderPipelineStatus(pipeline) {
+      const dot   = document.getElementById('pipeline-dot');
+      const label = document.getElementById('pipeline-label');
+      if (!pipeline) {
+        dot.className = 'status-dot dot-idle';
+        label.textContent = 'NO DATA';
+        return;
+      }
+      const s     = pipeline.status || 'idle';
+      const stage = pipeline.current_stage ? ' · ' + pipeline.current_stage.toUpperCase() : '';
+      label.textContent = s.toUpperCase() + stage;
+      dot.className = 'status-dot dot-' + (s === 'running' ? 'running' : s === 'done' ? 'done' : s === 'failed' ? 'error' : 'idle');
+    }
+
+    function renderAgents(agents) {
+      document.getElementById('agents-grid').innerHTML = agents.map(a => `
+        <div class="agent-card is-${a.status}">
+          <div class="agent-name">${a.name}</div>
+          <div class="agent-status-row">
+            <span class="status-dot dot-${a.status}"></span>
+            <span class="status-label">${a.status}</span>
+          </div>
+          <div class="agent-role">${a.role}</div>
+        </div>
+      `).join('');
+      const active = agents.filter(a => a.status === 'running').length;
+      document.querySelector('#agents-section .panel-meta').textContent =
+        agents.length + ' agents · ' + active + ' active';
+    }
+
+    function renderTasks(taskData) {
+      const tasks = taskData?.tasks || [];
+      const meta  = document.querySelector('#tasks-section .panel-meta');
+      if (!tasks.length) {
+        document.getElementById('tasks-tbody').innerHTML =
+          '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:20px">tasks.json 없음 — 파이프라인 실행 후 데이터가 표시됩니다</td></tr>';
+        meta.textContent = 'no data';
+        return;
+      }
+      meta.textContent = tasks.length + ' tasks';
+      document.getElementById('tasks-tbody').innerHTML = tasks.map(t => `
+        <tr>
+          <td><span class="task-id">${t.id}</span></td>
+          <td>${t.title}</td>
+          <td><span class="badge badge-${t.status}">${t.status.replace(/_/g, ' ')}</span></td>
+          <td><span class="badge badge-${t.priority || 'low'}">${t.priority || '—'}</span></td>
+          <td style="color:var(--text-secondary)">${t.assignee || '—'}</td>
+        </tr>
+      `).join('');
+    }
+
+    function renderLogs(logData) {
+      const logs = Array.isArray(logData) ? logData : [];
+      if (!logs.length) {
+        document.getElementById('logs-list').innerHTML =
+          '<li style="padding:16px;color:var(--text-muted);text-align:center">logs/monitor_log.json 없음 — Monitor 에이전트 실행 후 표시됩니다</li>';
+        return;
+      }
+      const recent = [...logs].reverse().slice(0, 20);
+      document.getElementById('logs-list').innerHTML = recent.map(l => {
+        const time   = l.timestamp ? new Date(l.timestamp).toLocaleTimeString('ko-KR') : (l.time || '—');
+        const sev    = (l.severity || 'INFO').toUpperCase();
+        const agent  = l.agent_affected || l.agent || '—';
+        const detail = l.detail || l.event || '';
+        return `
+          <li class="log-item">
+            <span class="log-time">${time}</span>
+            <span class="log-severity sev-${sev}">${sev}</span>
+            <span class="log-detail"><strong>${agent}</strong>: ${detail}</span>
+          </li>`;
+      }).join('');
+    }
+
+    function renderStrategy() {
+      document.getElementById('strategy-grid').innerHTML = STRATEGIES.map(s => `
+        <div class="strategy-card ${s.applied ? 'active' : 'inactive'}">
+          ${s.applied ? '<div class="applied-tag">✓ 현재 적용됨</div>' : ''}
+          <div class="pattern-name">${s.name}</div>
+          <div class="pattern-desc">${s.desc}</div>
+        </div>
+      `).join('');
+    }
+
+    // === MAIN REFRESH LOOP ===
+    async function refresh() {
+      const data   = await loadAll();
+      const agents = deriveAgents(data.pipeline);
+      renderPipelineStatus(data.pipeline);
+      renderAgents(agents);
+      renderTasks(data.tasks);
+      renderLogs(data.monitorLog);
+      renderStrategy();
+      const now = new Date().toLocaleTimeString('ko-KR');
+      document.getElementById('last-updated').textContent = now;
+      document.getElementById('last-updated-footer').textContent = '마지막 업데이트: ' + now;
+    }
+
+    refresh();
+    setInterval(refresh, 5000);
+  </script>
+</body>
+</html>
