@@ -1,0 +1,64 @@
+{
+  "tasks": [
+    {
+      "id": "task-001",
+      "title": "에이전트 카드 컴포넌트 구현",
+      "description": "각 에이전트의 상태를 카드 형태로 표시하는 HTML 컴포넌트 구현",
+      "assignee": "developer",
+      "priority": "high",
+      "status": "done",
+      "depends_on": [],
+      "acceptance_criteria": ["카드에 에이전트명, 상태, 역할이 표시됨", "상태별 색상 코딩 적용"],
+      "created_at": "2026-05-21T06:00:00Z",
+      "updated_at": "2026-05-21T06:15:00Z"
+    },
+    {
+      "id": "task-002",
+      "title": "작업 상태 목록 테이블 구현",
+      "description": "tasks.json 데이터를 읽어 상태/우선순위 배지와 함께 테이블로 렌더링",
+      "assignee": "developer",
+      "priority": "high",
+      "status": "in_progress",
+      "depends_on": ["task-001"],
+      "acceptance_criteria": ["5개 작업이 테이블에 표시됨", "배지 색상이 상태별로 다름"],
+      "created_at": "2026-05-21T06:10:00Z",
+      "updated_at": "2026-05-21T06:30:00Z"
+    },
+    {
+      "id": "task-003",
+      "title": "로그 패널 타임라인 구현",
+      "description": "monitor_log.json을 읽어 최신 20개 로그를 심각도 색상과 함께 표시",
+      "assignee": "developer",
+      "priority": "medium",
+      "status": "review",
+      "depends_on": ["task-001"],
+      "acceptance_criteria": ["INFO/WARNING/CRITICAL 색상 구분", "최신순 정렬"],
+      "created_at": "2026-05-21T06:10:00Z",
+      "updated_at": "2026-05-21T06:45:00Z"
+    },
+    {
+      "id": "task-004",
+      "title": "실시간 데이터 fetch 연동",
+      "description": "더미 데이터를 제거하고 실제 JSON 파일을 fetch로 로드, 5초 자동갱신",
+      "assignee": "developer",
+      "priority": "high",
+      "status": "qa_ready",
+      "depends_on": ["task-002", "task-003"],
+      "acceptance_criteria": ["fetch 실패 시 graceful fallback", "5초마다 자동 갱신"],
+      "created_at": "2026-05-21T06:20:00Z",
+      "updated_at": "2026-05-21T07:00:00Z"
+    },
+    {
+      "id": "task-005",
+      "title": "다크 테마 CSS 적용",
+      "description": "CSS 변수 토큰을 다크 팔레트로 교체, 가독성 및 대비 검증",
+      "assignee": "developer",
+      "priority": "medium",
+      "status": "pending",
+      "depends_on": [],
+      "acceptance_criteria": ["배경 #111110, 텍스트 #F2F0EB", "Inter/Roboto 미사용"],
+      "created_at": "2026-05-21T06:25:00Z",
+      "updated_at": "2026-05-21T06:25:00Z"
+    }
+  ]
+}

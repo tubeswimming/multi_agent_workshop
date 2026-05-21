@@ -1,0 +1,8 @@
+{
+  "status": "running",
+  "current_stage": "reviewing",
+  "current_task_id": "task-003",
+  "retry_counts": { "task-003": 1 },
+  "started_at": "2026-05-21T06:00:00Z",
+  "completed_at": null
+}

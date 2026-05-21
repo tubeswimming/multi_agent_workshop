@@ -1,0 +1,56 @@
+[
+  {
+    "timestamp": "2026-05-21T07:10:00Z",
+    "severity": "INFO",
+    "agent_affected": "orchestrator",
+    "task_id": null,
+    "event": "state_change",
+    "detail": "파이프라인 시작 — reviewing 단계 진입",
+    "action_taken": "logged"
+  },
+  {
+    "timestamp": "2026-05-21T07:08:33Z",
+    "severity": "INFO",
+    "agent_affected": "developer",
+    "task_id": "task-003",
+    "event": "state_change",
+    "detail": "task-003 구현 완료 → review 상태로 전환",
+    "action_taken": "logged"
+  },
+  {
+    "timestamp": "2026-05-21T07:05:55Z",
+    "severity": "WARNING",
+    "agent_affected": "monitor",
+    "task_id": "task-003",
+    "event": "task_stuck",
+    "detail": "task-003 in_progress 상태 15분 경과 — 타임아웃 경고",
+    "action_taken": "reported_to_orchestrator"
+  },
+  {
+    "timestamp": "2026-05-21T07:01:10Z",
+    "severity": "INFO",
+    "agent_affected": "reviewer",
+    "task_id": "task-002",
+    "event": "state_change",
+    "detail": "task-002 코드 리뷰 승인 → qa_ready",
+    "action_taken": "logged"
+  },
+  {
+    "timestamp": "2026-05-21T06:58:02Z",
+    "severity": "CRITICAL",
+    "agent_affected": "qa",
+    "task_id": "task-001",
+    "event": "repeated_failure",
+    "detail": "task-001 QA 테스트 2회 실패 — 에지케이스 미처리 발견",
+    "action_taken": "reported_to_orchestrator"
+  },
+  {
+    "timestamp": "2026-05-21T06:50:00Z",
+    "severity": "INFO",
+    "agent_affected": "planner",
+    "task_id": null,
+    "event": "state_change",
+    "detail": "tasks.json 생성 완료 — 5개 작업 등록",
+    "action_taken": "logged"
+  }
+]
