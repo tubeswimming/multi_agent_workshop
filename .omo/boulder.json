@@ -1,0 +1,119 @@
+{
+  "schema_version": 2,
+  "active_work_id": "dashboard-940d5c1d",
+  "works": {
+    "dashboard-940d5c1d": {
+      "work_id": "dashboard-940d5c1d",
+      "active_plan": "E:\\Works\\AI_multi_agent\\20260521-workshop\\.omo\\plans\\dashboard.md",
+      "plan_name": "dashboard",
+      "status": "completed",
+      "started_at": "2026-05-21T06:25:34.336Z",
+      "updated_at": "2026-05-21T06:52:36.536Z",
+      "session_ids": [
+        "ses_1b710681cffepkPLNcwu8fkl81"
+      ],
+      "session_origins": {
+        "ses_1b710681cffepkPLNcwu8fkl81": "direct"
+      },
+      "agent": "atlas",
+      "task_sessions": {
+        "todo:1": {
+          "task_key": "todo:1",
+          "task_label": "1",
+          "task_title": "HTML 뼈대 + 인라인 CSS 작성",
+          "session_id": "ses_1b6c8c05affer5b4xyw4ifYJvP",
+          "agent": "Sisyphus-Junior",
+          "category": "visual-engineering",
+          "updated_at": "2026-05-21T06:29:51.246Z",
+          "started_at": "2026-05-21T06:29:26.774Z",
+          "status": "completed",
+          "ended_at": "2026-05-21T06:29:51.246Z",
+          "elapsed_ms": 24472
+        },
+        "todo:2": {
+          "task_key": "todo:2",
+          "task_label": "2",
+          "task_title": "인라인 JS — Mock 데이터 추가",
+          "session_id": "ses_1b6c59447ffeFl3OnsQIhOwmbu",
+          "agent": "Sisyphus-Junior",
+          "category": "quick",
+          "updated_at": "2026-05-21T06:31:12.656Z",
+          "started_at": "2026-05-21T06:31:04.355Z",
+          "status": "completed",
+          "ended_at": "2026-05-21T06:31:12.656Z",
+          "elapsed_ms": 8301
+        },
+        "todo:3": {
+          "task_key": "todo:3",
+          "task_label": "3",
+          "task_title": "인라인 JS — 렌더러 4개 + init() 추가",
+          "session_id": "ses_1b6c46974ffeki0UuYOQ1E09bk",
+          "agent": "Sisyphus-Junior",
+          "category": "quick",
+          "updated_at": "2026-05-21T06:52:14.622Z",
+          "started_at": "2026-05-21T06:32:19.859Z",
+          "status": "completed",
+          "ended_at": "2026-05-21T06:52:14.622Z",
+          "elapsed_ms": 1194763
+        }
+      },
+      "ended_at": "2026-05-21T06:52:36.536Z",
+      "elapsed_ms": 1622200
+    }
+  },
+  "active_plan": "E:\\Works\\AI_multi_agent\\20260521-workshop\\.omo\\plans\\dashboard.md",
+  "started_at": "2026-05-21T06:25:34.336Z",
+  "status": "completed",
+  "updated_at": "2026-05-21T06:52:36.536Z",
+  "session_ids": [
+    "ses_1b710681cffepkPLNcwu8fkl81"
+  ],
+  "session_origins": {
+    "ses_1b710681cffepkPLNcwu8fkl81": "direct"
+  },
+  "plan_name": "dashboard",
+  "task_sessions": {
+    "todo:1": {
+      "task_key": "todo:1",
+      "task_label": "1",
+      "task_title": "HTML 뼈대 + 인라인 CSS 작성",
+      "session_id": "ses_1b6c8c05affer5b4xyw4ifYJvP",
+      "agent": "Sisyphus-Junior",
+      "category": "visual-engineering",
+      "updated_at": "2026-05-21T06:29:51.246Z",
+      "started_at": "2026-05-21T06:29:26.774Z",
+      "status": "completed",
+      "ended_at": "2026-05-21T06:29:51.246Z",
+      "elapsed_ms": 24472
+    },
+    "todo:2": {
+      "task_key": "todo:2",
+      "task_label": "2",
+      "task_title": "인라인 JS — Mock 데이터 추가",
+      "session_id": "ses_1b6c59447ffeFl3OnsQIhOwmbu",
+      "agent": "Sisyphus-Junior",
+      "category": "quick",
+      "updated_at": "2026-05-21T06:31:12.656Z",
+      "started_at": "2026-05-21T06:31:04.355Z",
+      "status": "completed",
+      "ended_at": "2026-05-21T06:31:12.656Z",
+      "elapsed_ms": 8301
+    },
+    "todo:3": {
+      "task_key": "todo:3",
+      "task_label": "3",
+      "task_title": "인라인 JS — 렌더러 4개 + init() 추가",
+      "session_id": "ses_1b6c46974ffeki0UuYOQ1E09bk",
+      "agent": "Sisyphus-Junior",
+      "category": "quick",
+      "updated_at": "2026-05-21T06:52:14.622Z",
+      "started_at": "2026-05-21T06:32:19.859Z",
+      "status": "completed",
+      "ended_at": "2026-05-21T06:52:14.622Z",
+      "elapsed_ms": 1194763
+    }
+  },
+  "agent": "atlas",
+  "ended_at": "2026-05-21T06:52:36.536Z",
+  "elapsed_ms": 1622200
+}
