@@ -1,0 +1,9 @@
+.playwright-mcp/
+dashboard-check.png
+dashboard-dark.png
+dashboard-live.png
+dashboard-nodata.png
+dashboard-phosphor.png
+dashboard-rollback.png
+*.png
+node_modules/
